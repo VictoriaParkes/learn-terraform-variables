@@ -67,3 +67,18 @@ variable "private_subnet_cidr_blocks" {
     "10.0.108.0/24"
   ]
 }
+
+variable "resource_tags" {
+  description = "Tags to set for all resources"
+  type = map(string)
+  default = {
+    project = "project-alpha",
+    environment = "dev"
+  }
+}
+
+variable "ec2_instance_type" {
+  description = "AWS EC2 instance type"
+  type = string
+  # when no default, assign value when Apply (terraform apply -var ec2_instance_type=t2.micro)
+}
