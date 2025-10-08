@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MPL-2.0
 
 provider "aws" {
-  region  = var.aws_region
+  region = var.aws_region
 }
 
 data "aws_availability_zones" "available" {
@@ -25,11 +25,29 @@ module "vpc" {
   tags = var.resource_tags
 }
 
+/*
+modules "app_security_group"/"lb_security_group"/"elb_http" reference 'terraform.auto.tfvars' file
+to assign values for names of the security groups using the project and environmemnt values from
+the 'resource_tags' map. This uses string interpolation.
+
+terraform.auto.tfvars:-
+resource_tags = {
+  project     = "project-alpha"
+  environment = "dev"
+  owner       = "me@example.com"
+}
+
+ec2_instance_type = "t3.micro"
+
+instance_count = 3
+
+*/
+
 module "app_security_group" {
   source  = "terraform-aws-modules/security-group/aws//modules/web"
   version = "4.17.0"
 
-  name        = "web-sg-project-alpha-dev"
+  name        = "web-sg-${var.resource_tags["project"]}-${var.resource_tags["environment"]}"
   description = "Security group for web-servers with HTTP ports open within VPC"
   vpc_id      = module.vpc.vpc_id
 
@@ -45,7 +63,7 @@ module "lb_security_group" {
   source  = "terraform-aws-modules/security-group/aws//modules/web"
   version = "4.17.0"
 
-  name        = "lb-sg-project-alpha-dev"
+  name        = "lb-sg-${var.resource_tags["project"]}-${var.resource_tags["environment"]}"
   description = "Security group for load balancer with HTTP ports open within VPC"
   vpc_id      = module.vpc.vpc_id
 
@@ -67,7 +85,7 @@ module "elb_http" {
   version = "4.0.1"
 
   # Ensure load balancer name is unique
-  name = "lb-${random_string.lb_id.result}-project-alpha-dev"
+  name = "lb-${random_string.lb_id.result}-${var.resource_tags["project"]}-${var.resource_tags["environment"]}"
 
   internal = false
 

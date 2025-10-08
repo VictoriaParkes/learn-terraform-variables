@@ -4,11 +4,11 @@
 terraform {
 
   cloud {
-      organization = "learning-org-vic"
-      workspaces {
-        name = "learn-terraform-variables"
-        project = "Learn Terraform"
-      }
+    organization = "learning-org-vic"
+    workspaces {
+      name    = "learn-terraform-variables"
+      project = "Learn Terraform"
+    }
   }
 
   required_providers {
