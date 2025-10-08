@@ -32,8 +32,8 @@ the 'resource_tags' map. This uses string interpolation.
 
 terraform.auto.tfvars:-
 resource_tags = {
-  project     = "project-alpha"
-  environment = "dev"
+  project     = "project-alpha",
+  environment = "dev",
   owner       = "me@example.com"
 }
 
